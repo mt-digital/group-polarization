@@ -1,0 +1,268 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{authblk}
+\usepackage{booktabs}
+\usepackage{apacite}
+\usepackage{graphicx}
+\usepackage{mathptmx}
+\usepackage[singlespacing]{setspace}
+\usepackage[headheight=1in,margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmin}{arg\,min} % thin space, limits underneath in displays
+\renewcommand{\headrulewidth}{0pt}
+\pagestyle{fancy}
+\chead{%
+  $6$$^{th}$ International Conference on Computational Social Science IC$^{2}$S$^{2}$\\
+  July 17-20, 2020, MIT, Cambridge, Massachusetts
+}
+
+% \graphicspath{{Figures/}}
+
+\title{Empirical and computational studies of group polarization}
+
+\author[]{} % Please leave Author-field blank for blind review and remove information that may identify the author(s)
+ 
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+\vspace{-6em}
+\begin{center}
+\textbf{\textit{Keywords: Opinion dynamics, model validation, psychology, agent-based modeling, ???}}
+\newline
+\end{center}
+
+\section*{Extended Abstract}
+
+There are many opinion dynamics models that make different assumptions about
+the social influence process, but it remains unclear which assumptions are
+empirically valid \cite{Flache2017}. To make progress, one approach we take
+here is to examine a particular social psychological phenomenon, ``group
+polarization''. This is an essential component of ``bi-polarization'' of the
+sort observed in U.S. politics, for example, but not the same. Instead, group
+polarization refers to the phenomenon where a group's average opinion on 
+some topic often leads to greater average opinion extremity 
+after the group discusses the topic, compared to pre-discussion opinions.
+Group polarization has been observed with such regularity, 
+\citeA{Sunstein2002} suggested this
+observed regularity be regarded as a scientific law. One approach to 
+modeling group polarization is based on a model of ``persuasive arguments'', 
+which seem to qualitatively explain experiments in one example \cite{Mas2013}.
+However, no work has been done to calculate key parameters used in that model,
+and the persuasive argument model component increases opinion dynamics model
+complexity, which are already quite complex.
+
+In this paper I present an alternative approach that enables direct 
+model comparison to data, including the calculation of meaningful parameters.
+To do this I modify an existing model of opinion dynamics developed by
+\citeA{Flache2011} and further investigated by \citeA{Turner2018}. The only
+modification is the introduction of two model parameters which will represent
+the strength of negative influence and the stubbornness of extreme opinions.
+The results are the calculation of these parameters for a number of 
+experimental settings using published research data to initialize our models
+and fit the free parameters that determine optimal model outcomes found by
+minimizing an error term over parameter space. Our results will partly 
+support the claim by \citeA{Mas2013} that negative influence is not necessary
+for group polarization. However, our results also show that persuasive arguments
+and homophily are not necessary for group polarization. 
+Furthermore, our method can be applied broadly to validate model assumptions 
+and calculate model parameters for empirical studies.
+
+(DATA SOURCES 1 par) For this preliminary work, we focus on two studies with
+fairly clear results. The first is a study of changes in racial attitudes among
+discussants in three groups who scored high, medium, or low on a racial prejudice
+pre-test \cite{Myers1970}. The second study examined shifts to more conservative
+or liberal views about feminism among discussants who were separated at the outset 
+into ``chauvinist'' or ``feminist'' groups based on their initial responses to
+a questionnaire \cite{Myers1975a}. In the first experiment, there were four
+discussants per group, and in the second experiment, there were between 22 
+in the chauvinist group and 26 in the feminist group. The opinion scale in 
+the first experiment was a nine-point scale, from -8 to +8 with -8 indicating 
+```white racism' is not responsible'' for bad conditions for African-Americans
+in US cities, and +8 indicates certainty that ``white racism'' is responsible.
+The opinion scale in the second study is a seven-point scale ranging from -3,
+indicating maximally conservative views on feminism, and +3 representing
+maximally liberal views on feminism, as determined through a six-item
+questionnaire. To obtain our computational results, these scores are scaled to
+lie between -1 and 1. When we calculate means, we first bin respondent scores
+into one of nine or seven bins, assign the appropriate categorical score, 
+and then calculate the mean. In the nine-point scale, for example, if the
+opinion fell between $\pm \frac{1}{18}$, this opinion would be given a zero;
+if the opinion were between -1 and $-1 + \frac{1}{9}$, the opinion would be
+-8, and so on. The data for these studies and selected experimental conditions
+are given in Table~\ref{tab:results} along with the results of model-fitting
+to parameterize our model for each individual condition.
+
+% \begin{itemize}
+%   \item \citeA{Mas2013}: Still need to answer the question of whether they 
+%     calculate model parameters or just do a bait and switch and fit a 
+%     regression model that ``looks like'' the ABM. 
+%   \item \citeA{Sunstein2002}: References to a number of studies. See p. 178
+%     \begin{itemize}
+%       \item Zuber et al "Choice shift and group polarization" J Pers. and 
+%         Soc. Psych. 1992. Group polarization in Germany.
+%       \item Abrams "Knowing what to think by knowing who you are" 
+%         Brit J. of Soc Psych 1990. Group polarization in New Zealand.
+%       \item Myers "Discussion-induced attitude polarization" Hum. Relations 1971.
+%         Moderately pro-feminist groups become more stronglly so after discussion.
+%       \item Myers and Bishop "Enhancement of dominant attitudes in group
+%         discussion" J. Pers. Soc. Psych 1971. More racist whites increase
+%         negative responses to whether racism is responsible for bad conditions
+%         in American cities; less racist whites become more positive in their
+%         answer after discussion.
+%       \item R. Brown \emph{Social Psychology} 2nd. Ed. 1985 -- ILL requested:
+%         Citizens of France become more critical of the US and its intentions
+%         with respect to economic aid.
+%     \end{itemize}
+%   \item \citeA{Krizan2007}: Showed ``self-categorization'', or equivalently
+%     ``other-categorization'', is not necessary for group polarization in
+%     their behavioral studies. I believe self-categorization is
+%     equivalent to negative influence, but need to argue this.
+% \end{itemize}
+
+Method (2 par):
+I sketch the opinion update process that incorporates categorization effects
+and the stubbornness of extreme opinions, and results in group polarization,
+leaving out some details. In the model of \citeA{Flache2011},
+agent $i$'s opinion on cultural issue $k$ at time $t$, $s_{ik,t}$, 
+is given by $s_{ij,t} = s_{ij,t-1} + \Delta s_{ij,t} \left ( 1 - |s_{ij,t-1}| \right )$.
+$\Delta s_{ij,t}$ is determined through weighted social influence. Opinions on
+each cultural issue are bounded arbitrarily between -1 and 1. Leaving aside
+many details for now, we propose that we can modulate the relative attractiveness
+of extreme opinions by adding a parameter, $\alpha$, to the update equation
+to make it 
+\[
+  s_{ij,t} = s_{ij,t-1} + \Delta s_{ij,t} \left ( 1 - |s_{ij,t-1}|^{\alpha} \right ).
+\]
+There are a number of theoretical reasons to assume that, after interaction,
+agents would update their opinions to be more extreme, including the most
+extreme opinions typically being the most convincing (REF) and individuals
+being more comfortable taking on and expressing more extreme opinions if 
+they know they have the social support of others with extreme opinions. 
+We obtain our results by calculating $\alpha$ for five different experimental
+conditions from the two studies introduced above. With $\delta_{obs}$ being
+the observed mean opinion shift in each experimental condition and 
+$\delta_{calc}(\alpha)$ being the calculated opinion shift, which is assumed to
+be a function of $\alpha$, we calcualte the best-fit $\alpha$ as the $\alpha$
+that minimizes the squared error, i.e.\
+\[
+  \argmin_{\alpha} \left( \delta_{obs} - \delta_{calc}(\alpha) \right )
+\]
+
+% Positive assimilation,
+% where agents become more alike in opinion after interaction, occurs when the
+% Manhattan distance between opinions is less than 1. Negative assimilation 
+% occurs when the distance is greater than 1. With $d_{ij,t}$ as the Manhattan distance
+% between opinion vector $i$ and $j$, the force of this attraction (positive
+% assimilation) or repulsion (negative assimilation) scales as $w_{ij,t} = 1 - d_{ij,t}$.
+% This incorporates ``biased assimilation'' where more similar opinions are
+% more attractive and more dissimlar opinions are more repulsive. 
+
+
+% We propose a modification with the addition of a parameter that measures the
+% effect of in-group versus out-group bias, where group membership is determined
+% by opinion distance \cite{Blau1977}. For this operationalization of 
+% categorization effect, the parameter will be $\gamma$ and introduced as a power 
+% in the weighting function, $w_{ij,t} = (1 - d_{ij,t})^\gamma$---(BUT SHOULD IT
+% BE $1/\gamma$ and switch the following explanation???)
+% Since $|w_{ij,t}| \leq 1$, lesser $\gamma$ will amplify
+% the influence of less extreme opponents and less agreeable allies, 
+% and greater $\gamma$ will attenuate the influence of less extreme opponents and less 
+% agreeable allies. 
+
+% By running models with either $\alpha$ and/or $\gamma$ as parameters to be fit,
+% we can run specific instances of the models with some $(\alpha, \gamma)$ pair,
+% compare the outcome measure of shift from initial mean to final mean opinion,
+% and update the parameters to find the best fit between the shift observed
+% empirically and the shift observed in the averaged model runs. Using a 
+% gradient descent method we can find the $(\alpha, \gamma)$ combination that
+% produces the best fit to empirical results. For these experiments we set the
+% network to be (-TBD-).
+
+
+(RESULTS 1-3 par): 
+
+\begin{table}
+  \centering
+  \caption{Observed means and shift in means from empirical studies and the
+  fitted parameter that minimized the error between observed and predicted
+  shift, $\alpha$. Myers \& Bishop (1970) used a nine-point scale and 
+  Myers (1975) used a seven-point scale. The best-fit $\alpha$ exponent is given
+  in the rightmost column.}
+  \label{tab:results}
+  \vspace{0.5em}
+  \begin{tabular}{crcccc}
+    Study     & Condition     & $\mu_{t=0}$ & $\mu_{t=T}$ & $\delta_{obs}$ & $\alpha_{calc}$ \\
+    \toprule
+    Myers \& Bishop 1970 & Low prejudice & 2.94 & 3.41 & +.47 & 1.25 \\
+                         & Medium prejudice & 1.3 & 0.67 & -0.64 & 0.4 \\
+                         & High prejudice & -1.7 & -3.01 & -1.3 & 1.5 \\
+                         \midrule
+    Myers 1975 & Chauvinists & -1.11 & -1.14 & -0.02 & 0.1 \\
+               & Feminists & 0.78 & 1.72 & 0.95 & 1.3 \\
+               \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
+% (DISCUSSION 2-3 par)
+% \begin{itemize}
+%   \item Zoom out. How does this impact the larger project not just of validating
+%     the assumptions of opinion dynamics models but also using them as models
+%     for data analysis?
+%   \item How can this approach be applied to other empirical data sources and
+%     other components/levels of opinion dynamics assumptions/outcomes?
+%     E.g.\ \emph{we believe this approach could be valuable to apply to multiple levels 
+%     of opinion dynamics, from cognitive assumptions to the outcome variable of
+%     the distribution of opinions of the population.} Follow up with two examples:
+%     \begin{itemize}
+%       \item Neuro-level validation of assimilation and homophily assumptions (ir-neuro).
+%       \item Population-level outcomes as illustrated in \citeA{Mason2018}.
+%     \end{itemize}
+%   \item Connection to ``persuasive arguments theory'', bounded confidence. 
+%     Neuro evidence supports minimal group paradigm as really affecting
+%     neural activity \cite{Cikara2014}, rebutting concerns that studies using
+%     that paradigm that found negative influence were flawed due to temporary
+%     nature of minimal groups \cite{Krizan2007,Mas2013}.
+%     \begin{itemize}
+%       \item Compare to computational model in \citeA{Bishop1974}.
+%       \item Bounded confidence seems to not have a mechanism for group
+%         polarization among interacting agents---they will always settle to
+%         the average of the group (proof somewhere?)
+%     \end{itemize}
+%   \item Using mean-field methods to calculate dynamics for any given $\alpha$
+%     and $\gamma$ so this CPU-expensive matched filtering isn't used.
+% \end{itemize}
+
+
+% \vskip 40pt
+% \underline {Guidelines:}
+% \begin{itemize}
+% \itemsep0pt
+%   \item 2 pages maximum (including figure and references)
+%   \item Single spaced
+%   \item Font size 12pt
+%   \item 1-inch margins
+%   \item Do not include author names for blind review and remove any information that may identify the author(s)
+% \end{itemize}
+
+% \underline {Include in Order:}
+% \begin{itemize}
+% \itemsep0pt
+%   \item Paper title
+%   \item 5 keywords
+%   \item Expanded abstract (= main text)  including figure
+%   \item References
+% \end{itemize}
+
+\bibliographystyle{apacite}
+
+\bibliography{/Users/mt/workspace/papers/library.bib}
+
+\end{document}
