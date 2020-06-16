@@ -1,0 +1,14 @@
+#! /bin/bash
+#$ -S /bin/bash
+#$ -q fast.q
+#$ -cwd
+#$ -j y
+#$ -V
+#$ -l mem_free=96G
+#$ -pe smp 24
+
+printf "\nReproducing FM2011 Figure 12b for K=$K. Started at `uptime`\n"
+
+polexp reproduce_fig12 $K $OUTPUT_DIR --n_trials=50
+
+printf "Finished with run for eproducing FM2011 Figure 12b for K=$K. Finished at `uptime`\n"

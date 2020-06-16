@@ -1,0 +1,8 @@
+*.pyc
+*__pycache__*
+*.mp4
+*data*
+*.egg-info*
+*.hdf5
+*.hdf
+.eggs/
