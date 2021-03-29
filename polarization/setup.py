@@ -22,7 +22,7 @@ install_requires = [
     'progressbar2==3.36.0',
     'prompt-toolkit==1.0.14',
     'ptyprocess==0.5.1',
-    'Pygments==2.2.0',
+    'Pygments==2.7.4',
     'pyparsing==2.2.0',
     'python-dateutil==2.6.1',
     'python-utils==2.3.0',
