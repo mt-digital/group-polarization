@@ -9,7 +9,7 @@ install_requires = [
     'cycler==0.10.0',
     'decorator==4.0.11',
     'h5py==2.7.1',
-    'joblib==0.11',
+    'joblib==1.2.0',
     'kiwisolver==1.0.1',
     'matplotlib==2.2.0',
     'networkx==1.11',
